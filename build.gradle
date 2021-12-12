@@ -1,3 +1,18 @@
+// 新增buildscript
+buildscript {
+	repositories {
+		// 新增阿里云仓库全家桶
+		maven{ url 'https://maven.aliyun.com/repository/central' }
+		maven{ url 'https://maven.aliyun.com/repository/public' }
+		maven{ url 'https://maven.aliyun.com/repository/google' }
+		maven{ url 'https://maven.aliyun.com/repository/gradle-plugin' }
+		maven{ url 'https://maven.aliyun.com/repository/spring' }
+		maven{ url 'https://maven.aliyun.com/repository/spring-plugin' }
+		maven{ url 'https://maven.aliyun.com/mvn/guide' }
+		maven{ url 'https://maven.aliyun.com/repository/apache-snapshots' }
+	}
+}
+
 plugins {
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE' apply false
 	id 'io.spring.ge.conventions' version '0.0.7'
@@ -277,6 +292,16 @@ configure(allprojects) { project ->
 			cacheChangingModulesFor 0, "seconds"
 		}
 		repositories {
+			// 新增阿里云仓库全家桶
+			maven{ url 'https://maven.aliyun.com/repository/central' }
+			maven{ url 'https://maven.aliyun.com/repository/public' }
+			maven{ url 'https://maven.aliyun.com/repository/google' }
+			maven{ url 'https://maven.aliyun.com/repository/gradle-plugin' }
+			maven{ url 'https://maven.aliyun.com/repository/spring' }
+			maven{ url 'https://maven.aliyun.com/repository/spring-plugin' }
+			maven{ url 'https://maven.aliyun.com/mvn/guide' }
+			maven{ url 'https://maven.aliyun.com/repository/apache-snapshots' }
+
 			mavenCentral()
 			maven { url "https://repo.spring.io/libs-spring-framework-build" }
 		}
