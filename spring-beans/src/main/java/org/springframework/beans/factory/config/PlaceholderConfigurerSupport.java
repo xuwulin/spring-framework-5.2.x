@@ -24,6 +24,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringValueResolver;
 
 /**
+ * BeanFactoryPostProcessor的一个实现类，用于解析bean定义属性值里面的占位符，此类不能被直接实例化使用
+ *
  * Abstract base class for property resource configurers that resolve placeholders
  * in bean definition property values. Implementations <em>pull</em> values from a
  * properties file or other {@linkplain org.springframework.core.env.PropertySource

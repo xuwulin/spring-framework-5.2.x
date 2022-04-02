@@ -1,18 +1,18 @@
 package com.xwl.debug.config;
 
-import com.xwl.debug.bean.Person;
+import com.xwl.debug.aware.MyAwareImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author xwl
- * @createdTime 2021/12/12 19:01
+ * @createdTime 2021/12/30 16:54
  * @description
  */
 @Configuration
-public class PersonConfig {
-	@Bean(name = "person")
-	public Person initBean() {
-		return new Person();
+public class AwareConfig {
+	@Bean
+	public MyAwareImpl myAwareImpl() {
+		return new MyAwareImpl();
 	}
 }

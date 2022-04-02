@@ -676,6 +676,9 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 
 	/**
+	 * 提交事务，就算没有异常，但是提交的时候也可能会回滚，因为由内层事务可能会标记回滚，所以这里先判断是否是需要本地回滚
+	 * 也就是设置回滚标记为全局回滚，如果本地不需要进行回滚，再判断是否需要全局回滚，就是真的执行回滚。
+	 *
 	 * This implementation of commit handles participating in existing
 	 * transactions and programmatic rollback requests.
 	 * Delegates to {@code isRollbackOnly}, {@code doCommit}
@@ -692,14 +695,17 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		}
 
 		DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
+		// 如果在事务链中已经被标记回滚，那么不会尝试提交事务，直接回滚
 		if (defStatus.isLocalRollbackOnly()) {
 			if (defStatus.isDebug()) {
 				logger.debug("Transactional code has requested rollback");
 			}
+			// 不可预期的回滚
 			processRollback(defStatus, false);
 			return;
 		}
 
+		// 设置了全局回滚
 		if (!shouldCommitOnGlobalRollbackOnly() && defStatus.isGlobalRollbackOnly()) {
 			if (defStatus.isDebug()) {
 				logger.debug("Global transaction is marked as rollback-only but transactional code requested commit");
@@ -792,6 +798,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	}
 
 	/**
+	 * 事务管理器根据事务状态来处理回滚
 	 * This implementation of rollback handles participating in existing
 	 * transactions. Delegates to {@code doRollback} and
 	 * {@code doSetRollbackOnly}.
@@ -810,6 +817,11 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	}
 
 	/**
+	 * unexpected这个一般式false，除非是设置了rollback-only=true
+	 * 然后判断是否设置了保存点，比如NESTED会设置，要先回滚到保存点。如果状态是新的事务，那就进行回滚，如果不是新的，就设置一个回滚标记。
+	 * 内部是设置连接持有器回滚标记。然后回滚完成回调，根据事务状态信息，完成后数据清除，和线程私有资源解绑
+	 * 重置连接自动提交，隔离级别，是否只读，释放连接，恢复挂起事务等
+	 *
 	 * Process an actual rollback.
 	 * The completed flag has already been checked.
 	 * @param status object representing the transaction
@@ -817,21 +829,26 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 */
 	private void processRollback(DefaultTransactionStatus status, boolean unexpected) {
 		try {
+			// 意外的混滚
 			boolean unexpectedRollback = unexpected;
 
 			try {
+				// 回滚完成前的回调
 				triggerBeforeCompletion(status);
 
+				// 由保存点回滚到保存点
 				if (status.hasSavepoint()) {
 					if (status.isDebug()) {
 						logger.debug("Rolling back transaction to savepoint");
 					}
 					status.rollbackToHeldSavepoint();
 				}
+				// 当前状态是一个新事物
 				else if (status.isNewTransaction()) {
 					if (status.isDebug()) {
 						logger.debug("Initiating transaction rollback");
 					}
+					// 进行回滚
 					doRollback(status);
 				}
 				else {

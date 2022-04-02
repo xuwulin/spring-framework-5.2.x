@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 引入外部的配置文件 db.properties -->
+	<context:property-placeholder location="classpath:person.properties"/>
+
+	<!-- 包扫描、只要标注了@Controller、@Service、@Repository、@Component这四个注解中任意一个的类，都会被扫描，加入到IOC容器中，
+	 	 use-default-filters="false" 禁用默认过滤规则，默认是扫描所有 -->
+	<!--<context:component-scan base-package="com.xwl.debug" use-default-filters="false"/>-->
+
+	<bean id="person" class="com.xwl.debug.bean.Person">
+		<property name="id" value="1"></property>
+		<property name="name" value="${name}"></property>
+	</bean>
+
+	<bean id="teacher" class="com.xwl.debug.bean.Teacher">
+		<property name="name" value="李四"></property>
+	</bean>
+</beans>

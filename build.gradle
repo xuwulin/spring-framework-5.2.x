@@ -308,6 +308,9 @@ configure(allprojects) { project ->
 	}
 	configurations.all {
 		resolutionStrategy {
+			// 添加以下配置，防止编译时报错：Please update your dependency to directly use the correct version 'xml-apis:xml-apis:1.0.b2'.
+			force 'xml-apis:xml-apis:1.4.01'
+
 			cacheChangingModulesFor 0, "seconds"
 			cacheDynamicVersionsFor 0, "seconds"
 		}

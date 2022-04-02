@@ -15,6 +15,14 @@ dependencies {
     compile(project(":spring-beans"))
     compile(project(":spring-core"))
     compile(project(":spring-aop"))
+    compile(project(":spring-aspects"))
+    compile(project(":spring-test"))
+    compile(project(":spring-jdbc"))
+    // c3p0数据源
+    implementation 'com.mchange:c3p0:0.9.5.5'
+    // mysql驱动
+    implementation 'mysql:mysql-connector-java:8.0.25'
+    // junit5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
