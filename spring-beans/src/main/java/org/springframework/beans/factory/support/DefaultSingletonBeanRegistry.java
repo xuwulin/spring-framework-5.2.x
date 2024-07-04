@@ -220,7 +220,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 							// 获取该bean的ObjectFactory工厂
 							ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 							if (singletonFactory != null) {
-								// 当某些方法需要提前初始化的时候则会调用addSingletonFactory方法将对应的ObjectFactory初始化策略存储在singletonFactories（三级缓存map）
+								// 执行三级缓存的lambda表达式，当某些方法需要提前初始化的时候则会调用addSingletonFactory方法将对应的ObjectFactory初始化策略存储在singletonFactories（三级缓存map）
 								singletonObject = singletonFactory.getObject();
 								// 添加到二级缓存中
 								this.earlySingletonObjects.put(beanName, singletonObject);

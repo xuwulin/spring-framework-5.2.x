@@ -196,9 +196,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @throws BeansException if the bean could not be created
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> T doGetBean(
-			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
-			throws BeansException {
+	protected <T> T doGetBean(String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly) throws BeansException {
 
 		// 提取对应的beanName，为什么还要再转换一次呢？原因在于当bean对象实现FactoryBean接口之后就会变成&beanName，同时如果存在别名，也会进行转换
 		String beanName = transformedBeanName(name);
@@ -206,7 +204,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 		// Eagerly check singleton cache for manually registered singletons.
 		// 提前检查单例缓存中是否有手动注册的单例对象，和循环依赖有关联
-		// 即先获取缓存中保存的单实例Bean。如果能获取到说明这个Bean之前被创建过（所有创建过的单实例Bean都会被缓存起来）
+		// 即先获取缓存中保存的单实例Bean。如果能获取到说明这个Bean之前被创建过（所有创建过的单实例Bean都会被缓存起来），从DefaultSingletonBeanRegistry 的 private final Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>(256);中获取的
 		Object sharedInstance = getSingleton(beanName);
 		// 如果bean的单例对象找到了，且没有创建bean实例时要使用的参数
 		if (sharedInstance != null && args == null) {
@@ -232,7 +230,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			// Check if bean definition exists in this factory.
-			// 如果bean定义不存在，就检查父工厂是否有bean的定义信息
+			// 缓存中获取不到，则开始bean的创建流程
+			// 如果bean定义不存在，就检查父工厂是否有bean的定义信息（父子容器，一般不会存在父子容器）
 			BeanFactory parentBeanFactory = getParentBeanFactory();
 			// 如果beanDefinitionMap中在所有已经加载的类中不包含beanName，那么就尝试从父容器中获取
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
@@ -265,7 +264,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 			// 如果不是做类型检查，那么表示要创建bean，此处在集合中做一个记录
 			if (!typeCheckOnly) {
-				// 为beanName标记为已创建（或将要创建）
+				// 标记当前bean已经被创建了，防止多线程的情况下，多个线程同时来创建同一个bean
 				markBeanAsCreated(beanName);
 			}
 

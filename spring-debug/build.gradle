@@ -20,8 +20,13 @@ dependencies {
     compile(project(":spring-jdbc"))
     // c3p0数据源
     implementation 'com.mchange:c3p0:0.9.5.5'
+    // druid
+    implementation 'com.alibaba:druid:1.2.8'
     // mysql驱动
     implementation 'mysql:mysql-connector-java:8.0.25'
+    // mybatis
+    implementation 'org.mybatis:mybatis:3.5.9'
+    implementation 'org.mybatis:mybatis-spring:2.0.7'
     // junit5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

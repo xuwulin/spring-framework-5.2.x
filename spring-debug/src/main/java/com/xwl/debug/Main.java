@@ -3,8 +3,10 @@ package com.xwl.debug;
 
 import com.xwl.debug.bean.Person;
 import com.xwl.debug.config.annotation.BeanConfig;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.io.Resource;
+
+import java.io.IOException;
 
 /**
  * @author xwl
@@ -12,7 +14,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * @description
  */
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException, IOException {
 		// xml配置文件方式
 		/*ApplicationContext ioc = new ClassPathXmlApplicationContext("beans.xml");
 		Person person = (Person) ioc.getBean("person");
@@ -21,9 +23,19 @@ public class Main {
 		System.out.println(teacher);*/
 
 		// 注解方式
-		ApplicationContext ioc = new AnnotationConfigApplicationContext(BeanConfig.class);
-		Person person = (Person) ioc.getBean("person");
+		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(BeanConfig.class);
+		Person person = (Person) applicationContext.getBean("person");
 		System.out.println(person);
 		System.out.println(person.sayHello());
+
+		// 注意：classpath:META-INF/spring.factories 只是到当前类路径下查找，在jar包中是找不到的
+		// classpath*:META-INF/spring.factories这样就能查找jar包中的
+		Resource[] resources = applicationContext.getResources("classpath*:META-INF/spring.factories");
+		for (Resource resource : resources) {
+			System.out.println(resource);
+		}
+
+		System.out.println(applicationContext.getEnvironment().getProperty("JAVA_HOME"));
+		System.out.println(applicationContext.getEnvironment().getProperty("server.port"));
 	}
 }

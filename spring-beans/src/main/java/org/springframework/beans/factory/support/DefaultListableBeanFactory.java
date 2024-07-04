@@ -238,6 +238,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 * 获取依赖注入（@Autowired、@Resource）比较器
 	 * Return the dependency comparator for this BeanFactory (may be {@code null}.
 	 * @since 4.0
 	 */
@@ -838,7 +839,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
 				// 判断是否是FactoryBean；是否是实现FactoryBean接口的Bean；
 				if (isFactoryBean(beanName)) {
-					// 根据&+beanName来获取factoryBean的对象（要获取工厂Bean本身，我们需要给beanName前面加一个&）
+					// 是FactoryBean，根据 &+beanName 来获取factoryBean的对象（要获取工厂Bean本身，我们需要给beanName前面加一个&）
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
 					// 进行类型转换
 					if (bean instanceof FactoryBean) {
@@ -868,7 +869,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		// Trigger post-initialization callback for all applicable beans...
-		// 遍历beanNames，触发所有SmartInitializingSingleton的后初始化回调
+		// 所有Bean都利用getBean创建完成以后，遍历beanNames，检查所有的Bean是否是SmartInitializingSingleton接口的（用于@EventListener）；如果是；就执行afterSingletonsInstantiated()；
 		for (String beanName : beanNames) {
 			// 获取beanName对应的bean实例
 			Object singletonInstance = getSingleton(beanName);

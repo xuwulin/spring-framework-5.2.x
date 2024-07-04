@@ -70,7 +70,7 @@ public class TxConfig {
 		dataSource.setUser("root");
 		dataSource.setPassword("123456");
 		dataSource.setDriverClass("com.mysql.jdbc.Driver");
-		dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/test");
+		dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/spring_transaction");
 		return dataSource;
 	}
 	

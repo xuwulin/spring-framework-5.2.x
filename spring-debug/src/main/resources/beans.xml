@@ -19,4 +19,7 @@
 	<bean id="teacher" class="com.xwl.debug.bean.Teacher">
 		<property name="name" value="李四"></property>
 	</bean>
+
+	<!-- 加入一些后置处理器，如：internalConfigurationAnnotationProcessor、internalAutowiredAnnotationProcessor等 -->
+	<context:annotation-config/>
 </beans>
